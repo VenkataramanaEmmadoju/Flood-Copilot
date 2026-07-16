@@ -1,0 +1,12 @@
+{
+  "name": "Telugu Flood Copilot",
+  "short_name": "Flood Copilot",
+  "description": "Offline AI decision support for flood emergencies in rural Telangana.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563EB",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "64x64", "type": "image/x-icon" }
+  ]
+}
