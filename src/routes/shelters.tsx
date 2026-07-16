@@ -60,7 +60,9 @@ type Shelter = {
 };
 
 // Realistic mock shelter data for rural Telangana.
-// TODO: Replace with live feed from Telangana State Disaster Response Force API.
+// TODO: Replace with data from GET /shelters (query params: district, lat, lng, radiusKm).
+//       Backing source: Telangana State Disaster Response Force API. Wire via
+//       TanStack Query useSuspenseQuery once the endpoint ships.
 const shelters: Shelter[] = [
   {
     id: "s1",
