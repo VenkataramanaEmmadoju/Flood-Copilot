@@ -9,8 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SurvivalKitRouteImport } from './routes/survival-kit'
+import { Route as SheltersRouteImport } from './routes/shelters'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ReportRouteImport } from './routes/report'
+import { Route as AlertsRouteImport } from './routes/alerts'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SurvivalKitRoute = SurvivalKitRouteImport.update({
+  id: '/survival-kit',
+  path: '/survival-kit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SheltersRoute = SheltersRouteImport.update({
+  id: '/shelters',
+  path: '/shelters',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlertsRoute = AlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +55,116 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/alerts': typeof AlertsRoute
+  '/report': typeof ReportRoute
+  '/settings': typeof SettingsRoute
+  '/shelters': typeof SheltersRoute
+  '/survival-kit': typeof SurvivalKitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/alerts': typeof AlertsRoute
+  '/report': typeof ReportRoute
+  '/settings': typeof SettingsRoute
+  '/shelters': typeof SheltersRoute
+  '/survival-kit': typeof SurvivalKitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/alerts': typeof AlertsRoute
+  '/report': typeof ReportRoute
+  '/settings': typeof SettingsRoute
+  '/shelters': typeof SheltersRoute
+  '/survival-kit': typeof SurvivalKitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/alerts'
+    | '/report'
+    | '/settings'
+    | '/shelters'
+    | '/survival-kit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/alerts'
+    | '/report'
+    | '/settings'
+    | '/shelters'
+    | '/survival-kit'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/alerts'
+    | '/report'
+    | '/settings'
+    | '/shelters'
+    | '/survival-kit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AlertsRoute: typeof AlertsRoute
+  ReportRoute: typeof ReportRoute
+  SettingsRoute: typeof SettingsRoute
+  SheltersRoute: typeof SheltersRoute
+  SurvivalKitRoute: typeof SurvivalKitRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/survival-kit': {
+      id: '/survival-kit'
+      path: '/survival-kit'
+      fullPath: '/survival-kit'
+      preLoaderRoute: typeof SurvivalKitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shelters': {
+      id: '/shelters'
+      path: '/shelters'
+      fullPath: '/shelters'
+      preLoaderRoute: typeof SheltersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alerts': {
+      id: '/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof AlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +177,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AlertsRoute: AlertsRoute,
+  ReportRoute: ReportRoute,
+  SettingsRoute: SettingsRoute,
+  SheltersRoute: SheltersRoute,
+  SurvivalKitRoute: SurvivalKitRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
