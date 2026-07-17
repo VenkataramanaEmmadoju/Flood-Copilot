@@ -162,7 +162,7 @@ function SheltersPage() {
         />
 
         {/* Summary cards */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <div className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-3">
           <SummaryCard
             icon={Home}
             label="Available Shelters"
@@ -192,7 +192,7 @@ function SheltersPage() {
         </div>
 
         {/* Filters */}
-        <div className="mt-8 grid gap-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:grid-cols-[1fr_auto_auto]">
+        <div className="mt-4 grid gap-3 rounded-2xl border border-border bg-card p-3 shadow-[var(--shadow-soft)] sm:mt-6 sm:p-4 sm:grid-cols-[1fr_auto_auto]">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -206,7 +206,7 @@ function SheltersPage() {
             value={district}
             onValueChange={(v) => { setDistrict(v); setVillage("all"); }}
           >
-            <SelectTrigger className="sm:w-56">
+            <SelectTrigger className="w-full sm:w-56">
               <SelectValue placeholder="All districts" />
             </SelectTrigger>
             <SelectContent>
@@ -217,7 +217,7 @@ function SheltersPage() {
             </SelectContent>
           </Select>
           <Select value={village} onValueChange={setVillage}>
-            <SelectTrigger className="sm:w-56">
+            <SelectTrigger className="w-full sm:w-56">
               <SelectValue placeholder="All villages" />
             </SelectTrigger>
             <SelectContent>
@@ -343,7 +343,7 @@ function MapPlaceholder({
     <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-soft)]">
       <div
         aria-hidden
-        className="relative h-[420px] w-full lg:h-[560px]"
+        className="relative h-[260px] w-full sm:h-[420px] lg:h-[560px]"
         style={{
           backgroundImage:
             "radial-gradient(circle at 20% 30%, oklch(0.85 0.09 200 / 0.35), transparent 45%)," +
@@ -477,7 +477,7 @@ function ShelterCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.3 }}
       onClick={onSelect}
-      className={`group cursor-pointer rounded-2xl border bg-card p-5 shadow-[var(--shadow-soft)] transition-all hover:border-primary/40 hover:shadow-[var(--shadow-elegant)] ${
+      className={`group cursor-pointer overflow-hidden rounded-2xl border bg-card p-4 shadow-[var(--shadow-soft)] transition-all hover:border-primary/40 hover:shadow-[var(--shadow-elegant)] sm:p-5 ${
         isSelected ? "border-primary/60 ring-2 ring-primary/20" : "border-border"
       }`}
     >
@@ -493,7 +493,7 @@ function ShelterCard({
         <StatusBadge variant={badge.variant}>{badge.label}</StatusBadge>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
+      <div className="mt-3 grid grid-cols-3 gap-2 text-sm sm:mt-4 sm:gap-3">
         <Stat icon={Navigation} label="Distance" value={`${shelter.distanceKm} km`} />
         <Stat icon={Users} label="Capacity" value={`${free} / ${shelter.capacity}`} sub="beds free" />
         <Stat icon={Phone} label="Contact" value={shelter.phone} mono />
@@ -508,7 +508,7 @@ function ShelterCard({
         />
       </div>
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-3 flex gap-2 sm:mt-4">
         <Button asChild variant="outline" className="flex-1 rounded-full" onClick={(e) => e.stopPropagation()}>
           <a
             href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
@@ -546,15 +546,15 @@ function Stat({
   mono?: boolean;
 }) {
   return (
-    <div className="rounded-lg bg-secondary/50 p-2.5">
+    <div className="min-w-0 overflow-hidden rounded-lg bg-secondary/50 p-2 sm:p-2.5">
       <p className="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-        <Icon className="h-3 w-3" />
-        {label}
+        <Icon className="h-3 w-3 shrink-0" />
+        <span className="truncate">{label}</span>
       </p>
       <p className={`mt-1 truncate text-sm font-semibold text-foreground ${mono ? "font-mono text-xs" : ""}`}>
         {value}
       </p>
-      {sub && <p className="text-[10px] text-muted-foreground">{sub}</p>}
+      {sub && <p className="truncate text-[10px] text-muted-foreground">{sub}</p>}
     </div>
   );
 }
