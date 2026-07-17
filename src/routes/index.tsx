@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
   Mic,
@@ -53,6 +53,7 @@ const alertTitles: Record<string, Record<string, string>> = {
 
 function HomePage() {
   const { t, lang } = useLanguage();
+  const navigate = useNavigate();
 
   const quickActions = [
     {
@@ -210,7 +211,7 @@ function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + i * 0.06, duration: 0.4 }}
               >
-                <QuickActionCard {...a} />
+                <QuickActionCard {...a} onClick={() => navigate({ to: "/report" })} />
               </motion.div>
             ))}
           </div>
