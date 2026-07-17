@@ -1,0 +1,66 @@
+"use strict";
+
+const emergencyContacts = [
+  {
+    id: "e001",
+    name: "National Emergency Helpline",
+    nameTe: "జాతీయ అత్యవసర సహాయ వాహిని",
+    number: "112",
+    description: "Police, Fire & Emergency Services — unified helpline",
+    descriptionTe: "పోలీసు, అగ్నిమాపక & అత్యవసర సేవలు",
+    available: "24/7",
+    type: "emergency",
+  },
+  {
+    id: "e002",
+    name: "Telangana Flood Helpline",
+    nameTe: "తెలంగాణ వరద సహాయ వాహిని",
+    number: "1077",
+    description: "State Disaster Management Authority flood desk",
+    descriptionTe: "రాష్ట్ర విపత్తు నిర్వహణ అధికారి వరద కేంద్రం",
+    available: "24/7",
+    type: "flood",
+  },
+  {
+    id: "e003",
+    name: "Ambulance",
+    nameTe: "అంబులెన్స్",
+    number: "108",
+    description: "Free ambulance service across Telangana",
+    descriptionTe: "తెలంగాణ అంతటా ఉచిత అంబులెన్స్ సేవ",
+    available: "24/7",
+    type: "medical",
+  },
+  {
+    id: "e004",
+    name: "NDRF Helpline",
+    nameTe: "NDRF సహాయ వాహిని",
+    number: "011-24363260",
+    description: "National Disaster Response Force",
+    descriptionTe: "జాతీయ విపత్తు స్పందన దళం",
+    available: "24/7",
+    type: "rescue",
+  },
+  {
+    id: "e005",
+    name: "TSSDMA Control Room",
+    nameTe: "TSSDMA నియంత్రణ గది",
+    number: "040-23454088",
+    description: "Telangana State Disaster Management Authority",
+    descriptionTe: "తెలంగాణ రాష్ట్ర విపత్తు నిర్వహణ సంస్థ",
+    available: "24/7",
+    type: "authority",
+  },
+  {
+    id: "e006",
+    name: "IMD Hyderabad",
+    nameTe: "IMD హైదరాబాద్",
+    number: "040-27898975",
+    description: "India Meteorological Department — weather alerts",
+    descriptionTe: "భారత వాతావరణ శాఖ — వాతావరణ హెచ్చరికలు",
+    available: "Office hours",
+    type: "weather",
+  },
+];
+
+module.exports = emergencyContacts;
