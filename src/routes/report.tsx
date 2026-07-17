@@ -400,6 +400,8 @@ function VoiceReport() {
       setTranscript((finalText + interim).trim());
     };
     rec.onerror = () => {
+      setRecording(false);
+      if (timer.current) window.clearInterval(timer.current);
       setError("Microphone access denied or not available. Type a transcript below.");
     };
     rec.start();
@@ -503,7 +505,7 @@ function VoiceReport() {
             )}
 
             {/* Editable transcript area */}
-            {(!hasSpeechApi || !!transcript || recording) && (
+            {(!hasSpeechApi || !!transcript || recording || !!error) && (
               <div className="w-full">
                 <Textarea
                   value={transcript}

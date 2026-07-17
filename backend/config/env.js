@@ -19,7 +19,7 @@ module.exports = {
   groq: {
     apiKey: process.env.GROQ_API_KEY || "",
     model: process.env.GROQ_MODEL || "llama-3.1-8b-instant",
-    modelVision: process.env.GROQ_VISION_MODEL || "llama-3.2-11b-vision-preview",
+    modelVision: process.env.GROQ_VISION_MODEL || "meta-llama/llama-4-scout-17b-16e-instruct",
   },
 
   cors: {
