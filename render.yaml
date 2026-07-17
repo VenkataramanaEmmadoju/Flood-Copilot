@@ -1,0 +1,32 @@
+services:
+  # ── Express.js API backend ────────────────────────────────────────────────
+  - type: web
+    name: flood-copilot-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: GROQ_API_KEY
+        sync: false          # set this manually in the Render dashboard
+      - key: CORS_ORIGINS
+        sync: false          # set to https://flood-copilot.onrender.com once frontend is deployed
+
+  # ── TanStack Start SSR frontend ───────────────────────────────────────────
+  - type: web
+    name: flood-copilot
+    runtime: node
+    buildCommand: npm install -g bun && bun install && bun run build
+    startCommand: node .output/server/index.mjs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Set this to the backend service URL once it is deployed:
+      # https://flood-copilot-api.onrender.com/api
+      - key: VITE_API_URL
+        sync: false

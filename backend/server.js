@@ -31,9 +31,13 @@ app.use(
 // ── CORS ──────────────────────────────────────────────────────────────────────
 app.use(
   cors({
-    origin: config.isDev
-      ? true // allow all in dev
-      : config.cors.origins,
+    origin: (origin, cb) => {
+      // Allow requests with no origin (curl, Postman, same-origin SSR)
+      if (!origin) return cb(null, true);
+      if (config.isDev) return cb(null, true);
+      if (config.cors.origins.includes(origin)) return cb(null, true);
+      cb(new Error(`CORS: origin '${origin}' not allowed`));
+    },
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -55,6 +59,7 @@ app.use("/api/health",    require("./routes/health"));
 app.use("/api/tips",      require("./routes/tips"));
 app.use("/api/shelters",  require("./routes/shelters"));
 app.use("/api/emergency", require("./routes/emergency"));
+app.use("/api/alerts",    require("./routes/alerts"));
 app.use("/api/chat",      require("./routes/chat"));
 app.use("/api/voice",     require("./routes/voice"));
 app.use("/api/image",     require("./routes/image"));
@@ -75,6 +80,7 @@ app.listen(config.port, "0.0.0.0", () => {
       "GET  /api/tips",
       "GET  /api/shelters",
       "GET  /api/emergency",
+      "GET  /api/alerts",
       "POST /api/chat",
       "POST /api/voice",
       "POST /api/image",

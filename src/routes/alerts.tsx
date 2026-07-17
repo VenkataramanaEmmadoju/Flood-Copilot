@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Search,
@@ -14,6 +14,8 @@ import {
   Sparkles,
   ListChecks,
   MapPin,
+  Loader2,
+  RefreshCw,
 } from "lucide-react";
 import { SectionHeader } from "@/components/section-header";
 import { StatusBadge } from "@/components/status-badge";
@@ -27,6 +29,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
+import type { Alert, Severity, SourceType } from "@/lib/types";
 
 export const Route = createFileRoute("/alerts")({
   head: () => ({
@@ -35,169 +39,12 @@ export const Route = createFileRoute("/alerts")({
       {
         name: "description",
         content:
-          "Live and mock flood bulletins from IMD, CWC, and Telangana district control rooms — filtered by district and severity.",
+          "Live flood bulletins from IMD, CWC, and Telangana district control rooms — filtered by district and severity.",
       },
     ],
   }),
   component: AlertsPage,
 });
-
-type Severity = "critical" | "high" | "moderate" | "advisory";
-
-type Alert = {
-  id: string;
-  title: string;
-  district: string;
-  mandal: string;
-  severity: Severity;
-  source: string;
-  sourceType: "IMD" | "CWC" | "District" | "NDRF" | "TSDMA";
-  publishedAt: string; // ISO
-  aiSummary: string;
-  instructions: string[];
-  details: string;
-  river?: string;
-};
-
-// TODO: Replace static seed with data from GET /alerts (query params: district, severity).
-//       Wire via TanStack Query useSuspenseQuery once the endpoint ships.
-const ALERTS: Alert[] = [
-  {
-    id: "AL-2026-0714-01",
-    title: "Godavari river crosses second warning level near Bhadrachalam",
-    district: "Bhadradri Kothagudem",
-    mandal: "Bhadrachalam",
-    severity: "critical",
-    source: "Central Water Commission (CWC)",
-    sourceType: "CWC",
-    publishedAt: "2026-07-16T05:20:00+05:30",
-    aiSummary:
-      "Godavari at Bhadrachalam is at 51.2 ft, above the second warning mark (50 ft). Upstream inflows from Sabari and Pranahita continue to rise. Low-lying colonies in Bhadrachalam, Burgampadu, and Aswapuram face inundation within 6–10 hours.",
-    instructions: [
-      "Move immediately to designated relief camps or higher ground.",
-      "Do not attempt to cross submerged roads or bridges.",
-      "Keep phones charged and stay tuned to 1077 district helpline.",
-      "Livestock owners should shift cattle to raised shelters.",
-    ],
-    details:
-      "As per CWC bulletin issued at 05:20 IST, discharge at Perur upstream station reached 12.4 lakh cusecs. Godavari is expected to cross the third warning mark (53 ft) by evening if inflows sustain. NDRF teams have been deployed at Bhadrachalam, Dummugudem, and Cherla. All schools within 5 km of the river will remain closed.",
-    river: "Godavari",
-  },
-  {
-    id: "AL-2026-0714-02",
-    title: "Very heavy rainfall warning for northern Telangana districts",
-    district: "Adilabad",
-    mandal: "Adilabad Urban",
-    severity: "high",
-    source: "India Meteorological Department (IMD) Hyderabad",
-    sourceType: "IMD",
-    publishedAt: "2026-07-16T04:00:00+05:30",
-    aiSummary:
-      "Adilabad, Kumurambheem Asifabad, Mancherial, and Nirmal likely to receive 115–204 mm rainfall in the next 24 hours. Localised flash floods and waterlogging expected in low-lying areas.",
-    instructions: [
-      "Avoid non-essential travel during nights and early morning.",
-      "Farmers should not enter fields near streams and check dams.",
-      "Fishermen along Kaddam and Sathnala reservoirs must stay off water.",
-    ],
-    details:
-      "Nowcast indicates active monsoon trough with moisture feed from Bay of Bengal. Red colour warning is in effect till 08:30 IST tomorrow. Wind gusts of 40–50 kmph expected with intense spells of rain.",
-    river: "Penganga",
-  },
-  {
-    id: "AL-2026-0714-03",
-    title: "Musi reservoir gates opened — downstream advisory",
-    district: "Nalgonda",
-    mandal: "Chityal",
-    severity: "high",
-    source: "Telangana State Disaster Management Authority (TSDMA)",
-    sourceType: "TSDMA",
-    publishedAt: "2026-07-16T03:15:00+05:30",
-    aiSummary:
-      "Six gates of Musi project lifted to 8 ft, releasing 42,000 cusecs. Villages along Musi in Chityal, Ramannapet, and Choutuppal mandals will see rising water in 4–6 hours.",
-    instructions: [
-      "Villagers within 500 m of Musi bank must evacuate to relief camps.",
-      "Fisherfolk should not venture near the river until further notice.",
-      "Panchayat secretaries to sound sirens every 30 minutes.",
-    ],
-    details:
-      "Inflow to Musi has crossed 55,000 cusecs due to heavy rains in the catchment. Discharge will be regulated based on downstream conditions. Control room contact: 08682-232345.",
-    river: "Musi",
-  },
-  {
-    id: "AL-2026-0714-04",
-    title: "Localised urban flooding warning for Hyderabad",
-    district: "Hyderabad",
-    mandal: "Hyderabad Central",
-    severity: "moderate",
-    source: "GHMC Enforcement Vigilance and Disaster Management (EVDM)",
-    sourceType: "District",
-    publishedAt: "2026-07-15T22:45:00+05:30",
-    aiSummary:
-      "Heavy showers expected in LB Nagar, Malakpet, Kukatpally, and Serilingampally zones between 06:00 and 12:00 IST. Waterlogging likely at 14 known hotspots.",
-    instructions: [
-      "Avoid Nagole–Uppal stretch and Balanagar underpass during peak rain.",
-      "Two-wheeler riders should not enter waterlogged stretches.",
-      "Report open manholes via GHMC 040-21111111.",
-    ],
-    details:
-      "EVDM teams have been positioned at 62 hotspots with dewatering pumps. Metro Rail services remain normal. Citizens can track live updates on the GHMC Hyderabad app.",
-  },
-  {
-    id: "AL-2026-0714-05",
-    title: "Krishna river inflows rising at Srisailam",
-    district: "Nagarkurnool",
-    mandal: "Kollapur",
-    severity: "moderate",
-    source: "CWC Krishna Basin",
-    sourceType: "CWC",
-    publishedAt: "2026-07-15T20:10:00+05:30",
-    aiSummary:
-      "Srisailam reservoir inflows at 2.1 lakh cusecs. Water level at 878 ft against FRL 885 ft. No immediate downstream threat, but riverside villages should stay alert.",
-    instructions: [
-      "Boating and river crossings suspended in Kollapur and Amrabad.",
-      "Tourists advised to avoid ghat road viewpoints.",
-    ],
-    details:
-      "Upstream discharges from Almatti and Narayanpur are being monitored. Next bulletin at 08:00 IST.",
-    river: "Krishna",
-  },
-  {
-    id: "AL-2026-0714-06",
-    title: "Flash flood advisory for Warangal rural streams",
-    district: "Warangal",
-    mandal: "Geesukonda",
-    severity: "advisory",
-    source: "IMD Nowcast",
-    sourceType: "IMD",
-    publishedAt: "2026-07-15T18:30:00+05:30",
-    aiSummary:
-      "Isolated thunderstorms with 50–70 mm rainfall likely in Geesukonda, Sangem, and Nekkonda mandals over next 3 hours. Small streams and vaagus may swell briefly.",
-    instructions: [
-      "Do not cross flowing streams on foot or by two-wheeler.",
-      "Move parked vehicles away from stream beds and low bridges.",
-    ],
-    details:
-      "Advisory issued based on Doppler radar returns from Shamshabad. Situation will be reassessed by 22:00 IST.",
-  },
-  {
-    id: "AL-2026-0714-07",
-    title: "NDRF pre-positioning in Mulugu and Bhupalpally",
-    district: "Mulugu",
-    mandal: "Eturnagaram",
-    severity: "advisory",
-    source: "NDRF 10th Battalion, Vijayawada",
-    sourceType: "NDRF",
-    publishedAt: "2026-07-15T16:00:00+05:30",
-    aiSummary:
-      "Two NDRF teams with inflatable boats and rescue gear stationed at Eturnagaram and Venkatapur as a precaution against Godavari tributary surges.",
-    instructions: [
-      "Village volunteers to coordinate with NDRF liaison officer.",
-      "Keep list of vulnerable persons (elderly, PwD, pregnant women) ready.",
-    ],
-    details:
-      "Teams equipped with satellite phones and medical kits. District Collector's office will coordinate any deployment requests.",
-  },
-];
 
 const SEVERITY_META: Record<
   Severity,
@@ -232,9 +79,7 @@ const SEVERITY_META: Record<
 const SEVERITY_ORDER: Severity[] = ["critical", "high", "moderate", "advisory"];
 
 function formatRelative(iso: string) {
-  const then = new Date(iso).getTime();
-  const now = Date.now();
-  const diff = Math.max(0, now - then);
+  const diff = Math.max(0, Date.now() - new Date(iso).getTime());
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return "just now";
   if (mins < 60) return `${mins} min ago`;
@@ -245,8 +90,7 @@ function formatRelative(iso: string) {
 }
 
 function formatFullTime(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleString("en-IN", {
+  return new Date(iso).toLocaleString("en-IN", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -257,41 +101,103 @@ function formatFullTime(iso: string) {
   });
 }
 
+function sourceIcon(type: SourceType) {
+  switch (type) {
+    case "IMD": return CloudRain;
+    case "CWC": return Waves;
+    case "NDRF": return ShieldAlert;
+    case "TSDMA": return AlertTriangle;
+    default: return Building2;
+  }
+}
+
 function AlertsPage() {
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState("");
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [query, setQuery] = useState("");
   const [district, setDistrict] = useState<string>("all");
   const [severity, setSeverity] = useState<string>("all");
 
+  const load = async () => {
+    setLoading(true);
+    setFetchError("");
+    try {
+      const res = await api.alerts();
+      if (res.success) {
+        setAlerts(res.data.alerts);
+        setLastRefreshed(new Date());
+      } else {
+        setFetchError(res.error.message);
+      }
+    } catch {
+      setFetchError("Could not load alerts. Check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { load(); }, []);
+
   const districts = useMemo(
-    () => Array.from(new Set(ALERTS.map((a) => a.district))).sort(),
-    [],
+    () => Array.from(new Set(alerts.map((a) => a.district))).sort(),
+    [alerts],
   );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return ALERTS.filter((a) => {
-      if (district !== "all" && a.district !== district) return false;
-      if (severity !== "all" && a.severity !== severity) return false;
-      if (!q) return true;
-      return (
-        a.title.toLowerCase().includes(q) ||
-        a.district.toLowerCase().includes(q) ||
-        a.mandal.toLowerCase().includes(q) ||
-        a.source.toLowerCase().includes(q) ||
-        (a.river ?? "").toLowerCase().includes(q)
+    return alerts
+      .filter((a) => district === "all" || a.district === district)
+      .filter((a) => severity === "all" || a.severity === severity)
+      .filter((a) => {
+        if (!q) return true;
+        return (
+          a.title.toLowerCase().includes(q) ||
+          a.district.toLowerCase().includes(q) ||
+          a.mandal.toLowerCase().includes(q) ||
+          a.source.toLowerCase().includes(q) ||
+          (a.river ?? "").toLowerCase().includes(q)
+        );
+      })
+      .sort(
+        (a, b) =>
+          SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity) ||
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
       );
-    }).sort(
-      (a, b) =>
-        SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity) ||
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
-    );
-  }, [query, district, severity]);
+  }, [query, district, severity, alerts]);
 
   const counts = useMemo(() => {
     const c: Record<Severity, number> = { critical: 0, high: 0, moderate: 0, advisory: 0 };
-    for (const a of ALERTS) c[a.severity]++;
+    for (const a of alerts) c[a.severity]++;
     return c;
-  }, []);
+  }, [alerts]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading flood alerts…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <div className="max-w-md text-center">
+          <Megaphone className="mx-auto h-8 w-8 text-muted-foreground" />
+          <p className="mt-3 text-sm font-medium text-foreground">{fetchError}</p>
+          <Button onClick={load} variant="outline" className="mt-4">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -306,10 +212,7 @@ function AlertsPage() {
         {SEVERITY_ORDER.map((sev) => {
           const meta = SEVERITY_META[sev];
           return (
-            <div
-              key={sev}
-              className="rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)]"
-            >
+            <div key={sev} className="rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)]">
               <div className="flex items-center gap-2">
                 <span className={cn("h-2.5 w-2.5 rounded-full", meta.dot)} />
                 <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -343,9 +246,7 @@ function AlertsPage() {
             <SelectContent>
               <SelectItem value="all">All districts</SelectItem>
               {districts.map((d) => (
-                <SelectItem key={d} value={d}>
-                  {d}
-                </SelectItem>
+                <SelectItem key={d} value={d}>{d}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -358,9 +259,7 @@ function AlertsPage() {
             <SelectContent>
               <SelectItem value="all">All severities</SelectItem>
               {SEVERITY_ORDER.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {SEVERITY_META[s].label}
-                </SelectItem>
+                <SelectItem key={s} value={s}>{SEVERITY_META[s].label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -372,7 +271,15 @@ function AlertsPage() {
         <h2 className="text-lg font-semibold tracking-tight">
           {filtered.length} bulletin{filtered.length === 1 ? "" : "s"}
         </h2>
-        <p className="text-xs text-muted-foreground">Last refreshed just now · Mock data</p>
+        <div className="flex items-center gap-3">
+          <p className="text-xs text-muted-foreground">
+            {lastRefreshed ? `Refreshed ${formatRelative(lastRefreshed.toISOString())}` : ""}
+          </p>
+          <Button variant="ghost" size="sm" onClick={load} className="gap-1.5 text-xs">
+            <RefreshCw className="h-3.5 w-3.5" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       <div className="mt-4 space-y-4">
@@ -389,21 +296,6 @@ function AlertsPage() {
       </div>
     </div>
   );
-}
-
-function sourceIcon(type: Alert["sourceType"]) {
-  switch (type) {
-    case "IMD":
-      return CloudRain;
-    case "CWC":
-      return Waves;
-    case "NDRF":
-      return ShieldAlert;
-    case "TSDMA":
-      return AlertTriangle;
-    default:
-      return Building2;
-  }
 }
 
 function AlertCard({ alert, index }: { alert: Alert; index: number }) {
@@ -459,7 +351,7 @@ function AlertCard({ alert, index }: { alert: Alert; index: number }) {
       <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
         <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary">
           <Sparkles className="h-3.5 w-3.5" />
-          AI summary (Telugu translation coming soon)
+          AI summary
         </div>
         <p className="mt-2 text-sm leading-relaxed text-foreground">{alert.aiSummary}</p>
       </div>
@@ -508,13 +400,10 @@ function AlertCard({ alert, index }: { alert: Alert; index: number }) {
           onClick={() => setOpen((v) => !v)}
           className="gap-1.5 text-primary hover:text-primary"
         >
-          {open ? "Hide details" : "Expandable details"}
+          {open ? "Hide details" : "Show full bulletin"}
           <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
         </Button>
-        <a
-          href="tel:1077"
-          className="text-xs font-medium text-muted-foreground hover:text-primary"
-        >
+        <a href="tel:1077" className="text-xs font-medium text-muted-foreground hover:text-primary">
           District helpline · 1077
         </a>
       </div>

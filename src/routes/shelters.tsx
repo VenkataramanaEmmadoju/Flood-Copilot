@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
@@ -13,6 +13,8 @@ import {
   Plus,
   Minus,
   Crosshair,
+  Loader2,
+  RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +27,8 @@ import {
 } from "@/components/ui/select";
 import { SectionHeader } from "@/components/section-header";
 import { StatusBadge } from "@/components/status-badge";
+import { api } from "@/lib/api";
+import type { Shelter } from "@/lib/types";
 
 export const Route = createFileRoute("/shelters")({
   head: () => ({
@@ -46,158 +50,49 @@ export const Route = createFileRoute("/shelters")({
   component: SheltersPage,
 });
 
-type Shelter = {
-  id: string;
-  name: string;
-  type: string;
-  district: string;
-  village: string;
-  distanceKm: number;
-  capacity: number;
-  occupied: number;
-  phone: string;
-  status: "open" | "filling" | "full";
-};
-
-// Realistic mock shelter data for rural Telangana.
-// TODO: Replace with data from GET /shelters (query params: district, lat, lng, radiusKm).
-//       Backing source: Telangana State Disaster Response Force API. Wire via
-//       TanStack Query useSuspenseQuery once the endpoint ships.
-const shelters: Shelter[] = [
-  {
-    id: "s1",
-    name: "Zilla Parishad High School",
-    type: "Government School",
-    district: "Bhadradri Kothagudem",
-    village: "Bhadrachalam",
-    distanceKm: 2.4,
-    capacity: 350,
-    occupied: 170,
-    phone: "+91 8743 232 118",
-    status: "open",
-  },
-  {
-    id: "s2",
-    name: "Sri Rama Community Hall",
-    type: "Community Hall",
-    district: "Bhadradri Kothagudem",
-    village: "Burgampadu",
-    distanceKm: 5.8,
-    capacity: 220,
-    occupied: 92,
-    phone: "+91 8744 220 341",
-    status: "open",
-  },
-  {
-    id: "s3",
-    name: "Government Junior College",
-    type: "College",
-    district: "Warangal",
-    village: "Hanamkonda",
-    distanceKm: 8.1,
-    capacity: 480,
-    occupied: 410,
-    phone: "+91 870 245 6712",
-    status: "filling",
-  },
-  {
-    id: "s4",
-    name: "Mandal Parishad Primary School",
-    type: "Government School",
-    district: "Warangal",
-    village: "Parkal",
-    distanceKm: 11.3,
-    capacity: 180,
-    occupied: 40,
-    phone: "+91 8712 234 908",
-    status: "open",
-  },
-  {
-    id: "s5",
-    name: "Palair Panchayat Bhavan",
-    type: "Panchayat Office",
-    district: "Khammam",
-    village: "Palair",
-    distanceKm: 13.6,
-    capacity: 140,
-    occupied: 138,
-    phone: "+91 8742 288 550",
-    status: "full",
-  },
-  {
-    id: "s6",
-    name: "Government Model School",
-    type: "Government School",
-    district: "Khammam",
-    village: "Kusumanchi",
-    distanceKm: 17.2,
-    capacity: 260,
-    occupied: 90,
-    phone: "+91 8742 244 118",
-    status: "open",
-  },
-  {
-    id: "s7",
-    name: "TTD Kalyana Mandapam",
-    type: "Community Hall",
-    district: "Mulugu",
-    village: "Eturnagaram",
-    distanceKm: 21.8,
-    capacity: 300,
-    occupied: 210,
-    phone: "+91 8717 232 001",
-    status: "filling",
-  },
-  {
-    id: "s8",
-    name: "Rural Development Training Centre",
-    type: "Training Centre",
-    district: "Mulugu",
-    village: "Mangapet",
-    distanceKm: 25.4,
-    capacity: 200,
-    occupied: 55,
-    phone: "+91 8717 245 776",
-    status: "open",
-  },
-  {
-    id: "s9",
-    name: "Zilla Parishad Girls School",
-    type: "Government School",
-    district: "Mahabubabad",
-    village: "Kesamudram",
-    distanceKm: 28.7,
-    capacity: 320,
-    occupied: 118,
-    phone: "+91 8719 233 442",
-    status: "open",
-  },
-];
-
 function statusBadge(status: Shelter["status"]) {
-  if (status === "open")
-    return { label: "Open", variant: "success" as const };
-  if (status === "filling")
-    return { label: "Filling Up", variant: "warning" as const };
+  if (status === "open") return { label: "Open", variant: "success" as const };
+  if (status === "filling") return { label: "Filling Up", variant: "warning" as const };
   return { label: "Full", variant: "danger" as const };
 }
 
 function SheltersPage() {
+  const [shelters, setShelters] = useState<Shelter[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState("");
   const [query, setQuery] = useState("");
   const [district, setDistrict] = useState<string>("all");
   const [village, setVillage] = useState<string>("all");
-  const [selectedId, setSelectedId] = useState<string>(shelters[0].id);
+  const [selectedId, setSelectedId] = useState<string>("");
+
+  const load = async () => {
+    setLoading(true);
+    setFetchError("");
+    try {
+      const res = await api.shelters();
+      if (res.success) {
+        setShelters(res.data.shelters);
+        if (res.data.shelters.length > 0) setSelectedId(res.data.shelters[0].id);
+      } else {
+        setFetchError(res.error.message);
+      }
+    } catch {
+      setFetchError("Could not load shelters. Check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { load(); }, []);
 
   const districts = useMemo(
     () => Array.from(new Set(shelters.map((s) => s.district))).sort(),
-    [],
+    [shelters],
   );
   const villages = useMemo(() => {
-    const pool = district === "all"
-      ? shelters
-      : shelters.filter((s) => s.district === district);
+    const pool = district === "all" ? shelters : shelters.filter((s) => s.district === district);
     return Array.from(new Set(pool.map((s) => s.village))).sort();
-  }, [district]);
+  }, [district, shelters]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -213,30 +108,52 @@ function SheltersPage() {
           s.type.toLowerCase().includes(q),
       )
       .sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [query, district, village]);
+  }, [query, district, village, shelters]);
 
   const summary = useMemo(() => {
     const available = filtered.filter((s) => s.status !== "full");
     const totalCap = filtered.reduce((sum, s) => sum + s.capacity, 0);
     const totalOccupied = filtered.reduce((sum, s) => sum + s.occupied, 0);
-    const nearest = filtered[0];
     return {
       availableCount: available.length,
       totalCap,
       totalOccupied,
       utilization: totalCap ? Math.round((totalOccupied / totalCap) * 100) : 0,
-      nearest,
+      nearest: filtered[0],
     };
   }, [filtered]);
 
   const selected = filtered.find((s) => s.id === selectedId) ?? filtered[0];
 
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading shelters…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <div className="max-w-md text-center">
+          <MapPin className="mx-auto h-8 w-8 text-muted-foreground" />
+          <p className="mt-3 text-sm font-medium text-foreground">{fetchError}</p>
+          <Button onClick={load} variant="outline" className="mt-4">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
-      <div
-        className="absolute inset-0 -z-10"
-        style={{ background: "var(--gradient-subtle)" }}
-      />
+      <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-subtle)" }} />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <SectionHeader
           eyebrow="Nearby Relief"
@@ -287,10 +204,7 @@ function SheltersPage() {
           </div>
           <Select
             value={district}
-            onValueChange={(v) => {
-              setDistrict(v);
-              setVillage("all");
-            }}
+            onValueChange={(v) => { setDistrict(v); setVillage("all"); }}
           >
             <SelectTrigger className="sm:w-56">
               <SelectValue placeholder="All districts" />
@@ -298,9 +212,7 @@ function SheltersPage() {
             <SelectContent>
               <SelectItem value="all">All districts</SelectItem>
               {districts.map((d) => (
-                <SelectItem key={d} value={d}>
-                  {d}
-                </SelectItem>
+                <SelectItem key={d} value={d}>{d}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -311,9 +223,7 @@ function SheltersPage() {
             <SelectContent>
               <SelectItem value="all">All villages</SelectItem>
               {villages.map((v) => (
-                <SelectItem key={v} value={v}>
-                  {v}
-                </SelectItem>
+                <SelectItem key={v} value={v}>{v}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -329,9 +239,7 @@ function SheltersPage() {
 
           <div className="flex flex-col">
             <div className="flex items-baseline justify-between">
-              <h2 className="text-lg font-semibold text-foreground">
-                Nearest Shelters
-              </h2>
+              <h2 className="text-lg font-semibold text-foreground">Nearest Shelters</h2>
               <span className="text-xs text-muted-foreground">
                 {filtered.length} result{filtered.length === 1 ? "" : "s"}
               </span>
@@ -349,7 +257,6 @@ function SheltersPage() {
                   </p>
                 </div>
               )}
-
               {filtered.map((s, i) => (
                 <ShelterCard
                   key={s.id}
@@ -397,12 +304,8 @@ function SummaryCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            {label}
-          </p>
-          <p className="mt-2 truncate text-xl font-semibold text-foreground">
-            {value}
-          </p>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+          <p className="mt-2 truncate text-xl font-semibold text-foreground">{value}</p>
           <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
         </div>
         <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${toneClass}`}>
@@ -421,12 +324,6 @@ function SummaryCard({
   );
 }
 
-// TODO: Replace this placeholder with a real interactive map (Leaflet + OSM tiles
-// or MapLibre) once offline tile bundles are provisioned. The map must:
-//   1. Render markers from the `shelters` prop
-//   2. Highlight the marker matching `selectedId`
-//   3. Call `onSelect(id)` when a marker is tapped
-//   4. Support offline tile fallback for rural low-connectivity use.
 function MapPlaceholder({
   shelters,
   selectedId,
@@ -436,8 +333,6 @@ function MapPlaceholder({
   selectedId?: string;
   onSelect: (id: string) => void;
 }) {
-  // Distribute shelter pins deterministically across the placeholder canvas
-  // so the layout stays stable between renders.
   const pins = shelters.slice(0, 9).map((s, i) => ({
     shelter: s,
     left: 12 + ((i * 73) % 76),
@@ -446,7 +341,6 @@ function MapPlaceholder({
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-soft)]">
-      {/* Faux map surface */}
       <div
         aria-hidden
         className="relative h-[420px] w-full lg:h-[560px]"
@@ -457,7 +351,6 @@ function MapPlaceholder({
             "linear-gradient(180deg, oklch(0.97 0.02 220), oklch(0.94 0.03 200))",
         }}
       >
-        {/* Grid overlay */}
         <div
           className="absolute inset-0 opacity-40"
           style={{
@@ -467,31 +360,11 @@ function MapPlaceholder({
             backgroundSize: "42px 42px",
           }}
         />
-        {/* Faux "rivers" */}
-        <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="0 0 400 400"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M -20 260 Q 80 200, 160 240 T 340 200 T 460 220"
-            fill="none"
-            stroke="oklch(0.7 0.11 230)"
-            strokeWidth="6"
-            strokeLinecap="round"
-            opacity="0.55"
-          />
-          <path
-            d="M 60 -20 Q 100 120, 180 180 T 260 340 T 300 460"
-            fill="none"
-            stroke="oklch(0.72 0.1 230)"
-            strokeWidth="4"
-            strokeLinecap="round"
-            opacity="0.45"
-          />
+        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 400 400" preserveAspectRatio="none">
+          <path d="M -20 260 Q 80 200, 160 240 T 340 200 T 460 220" fill="none" stroke="oklch(0.7 0.11 230)" strokeWidth="6" strokeLinecap="round" opacity="0.55" />
+          <path d="M 60 -20 Q 100 120, 180 180 T 260 340 T 300 460" fill="none" stroke="oklch(0.72 0.1 230)" strokeWidth="4" strokeLinecap="round" opacity="0.45" />
         </svg>
 
-        {/* Pins */}
         {pins.map(({ shelter, left, top }) => {
           const active = shelter.id === selectedId;
           const color =
@@ -509,21 +382,14 @@ function MapPlaceholder({
               style={{ left: `${left}%`, top: `${top}%` }}
               aria-label={`${shelter.name}, ${shelter.village}`}
             >
-              <span
-                className={`relative flex h-9 w-9 items-center justify-center rounded-full shadow-lg ring-2 ring-white transition-transform ${color} ${
-                  active ? "scale-125" : "group-hover:scale-110"
-                }`}
-              >
+              <span className={`relative flex h-9 w-9 items-center justify-center rounded-full shadow-lg ring-2 ring-white transition-transform ${color} ${active ? "scale-125" : "group-hover:scale-110"}`}>
                 <MapPin className="h-4 w-4" />
-                {active && (
-                  <span className="absolute -inset-1 animate-ping rounded-full bg-current opacity-30" />
-                )}
+                {active && <span className="absolute -inset-1 animate-ping rounded-full bg-current opacity-30" />}
               </span>
             </button>
           );
         })}
 
-        {/* Selected pin callout */}
         {selectedId && (
           <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-border bg-card/95 p-3 shadow-[var(--shadow-elegant)] backdrop-blur sm:right-auto sm:max-w-xs">
             {(() => {
@@ -533,16 +399,14 @@ function MapPlaceholder({
               return (
                 <>
                   <div className="flex items-center justify-between gap-2">
-                    <p className="truncate text-sm font-semibold text-foreground">
-                      {sel.name}
-                    </p>
+                    <p className="truncate text-sm font-semibold text-foreground">{sel.name}</p>
                     <StatusBadge variant={badge.variant}>{badge.label}</StatusBadge>
                   </div>
                   <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
                     <MapPin className="h-3 w-3" /> {sel.village}, {sel.district}
                   </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    {sel.distanceKm} km away · {sel.capacity - sel.occupied} beds free
+                    {sel.distanceKm} km away · {Math.max(0, sel.capacity - sel.occupied)} beds free
                   </p>
                 </>
               );
@@ -550,7 +414,6 @@ function MapPlaceholder({
           </div>
         )}
 
-        {/* Map chrome */}
         <div className="absolute right-3 top-3 flex flex-col gap-2">
           <MapChromeButton icon={Plus} label="Zoom in" />
           <MapChromeButton icon={Minus} label="Zoom out" />
@@ -566,32 +429,19 @@ function MapPlaceholder({
         </div>
       </div>
 
-      {/* Legend */}
       <div className="flex flex-wrap items-center gap-4 border-t border-border bg-card/60 px-4 py-3 text-xs text-muted-foreground">
         <LegendDot color="bg-emerald-500" label="Open" />
         <LegendDot color="bg-amber-500" label="Filling up" />
         <LegendDot color="bg-destructive" label="Full" />
-        <span className="ml-auto hidden sm:inline">
-          Tap a pin to view details
-        </span>
+        <span className="ml-auto hidden sm:inline">Tap a pin to view details</span>
       </div>
     </div>
   );
 }
 
-function MapChromeButton({
-  icon: Icon,
-  label,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-}) {
+function MapChromeButton({ icon: Icon, label }: { icon: React.ComponentType<{ className?: string }>; label: string }) {
   return (
-    <button
-      type="button"
-      aria-label={label}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/95 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-secondary"
-    >
+    <button type="button" aria-label={label} className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/95 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-secondary">
       <Icon className="h-4 w-4" />
     </button>
   );
@@ -633,11 +483,7 @@ function ShelterCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="truncate text-base font-semibold text-foreground">
-              {shelter.name}
-            </h3>
-          </div>
+          <h3 className="truncate text-base font-semibold text-foreground">{shelter.name}</h3>
           <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
             <MapPin className="h-3 w-3" />
             {shelter.village}, {shelter.district}
@@ -648,41 +494,22 @@ function ShelterCard({
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
-        <Stat
-          icon={Navigation}
-          label="Distance"
-          value={`${shelter.distanceKm} km`}
-        />
-        <Stat
-          icon={Users}
-          label="Capacity"
-          value={`${free} / ${shelter.capacity}`}
-          sub="beds free"
-        />
+        <Stat icon={Navigation} label="Distance" value={`${shelter.distanceKm} km`} />
+        <Stat icon={Users} label="Capacity" value={`${free} / ${shelter.capacity}`} sub="beds free" />
         <Stat icon={Phone} label="Contact" value={shelter.phone} mono />
       </div>
 
       <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
         <div
           className={`h-full rounded-full transition-all ${
-            shelter.status === "full"
-              ? "bg-destructive"
-              : shelter.status === "filling"
-                ? "bg-amber-500"
-                : "bg-emerald-500"
+            shelter.status === "full" ? "bg-destructive" : shelter.status === "filling" ? "bg-amber-500" : "bg-emerald-500"
           }`}
           style={{ width: `${Math.min(100, utilization)}%` }}
         />
       </div>
 
       <div className="mt-4 flex gap-2">
-        <Button
-          asChild
-          variant="outline"
-          className="flex-1 rounded-full"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* TODO: Wire to real map routing (Google Maps / OSRM) once map is integrated. */}
+        <Button asChild variant="outline" className="flex-1 rounded-full" onClick={(e) => e.stopPropagation()}>
           <a
             href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
               `${shelter.name}, ${shelter.village}, ${shelter.district}, Telangana`,
@@ -694,11 +521,7 @@ function ShelterCard({
             Directions
           </a>
         </Button>
-        <Button
-          asChild
-          className="flex-1 rounded-full"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <Button asChild className="flex-1 rounded-full" onClick={(e) => e.stopPropagation()}>
           <a href={`tel:${shelter.phone.replace(/\s+/g, "")}`}>
             <Phone className="mr-1 h-4 w-4" />
             Call
@@ -728,11 +551,7 @@ function Stat({
         <Icon className="h-3 w-3" />
         {label}
       </p>
-      <p
-        className={`mt-1 truncate text-sm font-semibold text-foreground ${
-          mono ? "font-mono text-xs" : ""
-        }`}
-      >
+      <p className={`mt-1 truncate text-sm font-semibold text-foreground ${mono ? "font-mono text-xs" : ""}`}>
         {value}
       </p>
       {sub && <p className="text-[10px] text-muted-foreground">{sub}</p>}
