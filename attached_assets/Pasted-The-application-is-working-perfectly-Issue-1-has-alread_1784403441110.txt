@@ -1,0 +1,85 @@
+The application is working perfectly.
+
+Issue 1 has already been fixed successfully.
+
+There is ONLY ONE remaining issue.
+
+DO NOT modify anything except the mobile layout of the workflow cards inside the About page.
+
+========================================================
+
+SECTION
+
+About Page
+
+"Multimodal inputs → structured action"
+
+========================================================
+
+Current Situation
+
+The cards are already displayed in two columns.
+
+However, because there is an odd number of workflow cards, the last row contains only one card, leaving a large empty space and making the section look visually unbalanced.
+
+========================================================
+
+Required Fix (MOBILE ONLY)
+
+Instead of a 2-column grid, change ONLY the mobile layout to a responsive 3-column grid.
+
+Example:
+
+Voice        Photo        AI Copilot
+
+AI Summary   112 / Shelter   SOS
+
+(or however many workflow cards exist)
+
+Requirements:
+
+1. ONLY modify the layout inside this workflow section.
+2. Mobile devices ONLY.
+3. Desktop layout must remain EXACTLY the same.
+4. Tablet layout must remain EXACTLY the same.
+5. Keep every card exactly the same.
+6. Keep icons exactly the same.
+7. Keep colors exactly the same.
+8. Keep typography exactly the same.
+9. Keep animations exactly the same.
+10. Keep shadows exactly the same.
+11. Keep borders exactly the same.
+12. Keep spacing style exactly the same.
+13. Do NOT modify business logic.
+14. Do NOT modify translations.
+15. Do NOT modify routing.
+16. Do NOT modify APIs.
+17. Do NOT modify any other page.
+
+========================================================
+
+Responsive Requirements
+
+• Use a 3-column grid on mobile.
+• All cards must have identical width.
+• All cards must have identical height.
+• Icons centered.
+• Titles centered.
+• Subtitle centered.
+• Equal spacing between rows.
+• Equal spacing between columns.
+• No horizontal scrolling.
+• No clipping.
+• The entire workflow section should look balanced with no empty column.
+
+========================================================
+
+IMPORTANT
+
+This is ONLY a mobile layout refinement.
+
+Do NOT redesign anything.
+
+Do NOT touch any component outside this workflow section.
+
+Everything else in the application is already perfect and must remain unchanged.

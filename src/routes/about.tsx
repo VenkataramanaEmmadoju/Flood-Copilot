@@ -232,7 +232,7 @@ function AboutPage() {
       {/* AI workflow diagram */}
       <Section eyebrow={t("about.aiWorkflowEyebrow")} title={t("about.aiWorkflowTitle")} icon={Brain}>
         <div className="rounded-3xl border border-border bg-gradient-to-br from-secondary/40 to-background p-6 shadow-[var(--shadow-soft)] sm:p-8">
-          <div className="grid grid-cols-2 gap-4 md:flex md:flex-wrap md:items-center md:justify-between">
+          <div className="grid grid-cols-3 gap-4 md:flex md:flex-wrap md:items-center md:justify-between">
             {AI_WORKFLOW.map((n, i) => {
               const Icon = n.icon;
               const isHub = n.label === "AI Copilot";
