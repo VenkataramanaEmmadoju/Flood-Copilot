@@ -28,10 +28,28 @@ export const Route = createFileRoute("/")({
 });
 
 const alertLevels = [
-  { level: "Red", variant: "danger" as const, location: "Bhadrachalam, Bhadradri Kothagudem", titleKey: "godavari", time: "12 min ago", body: "Water level at 53.2 ft and rising. Evacuation ordered for low-lying colonies. Move to designated relief camps immediately." },
-  { level: "Orange", variant: "warning" as const, location: "Warangal, Hanamkonda", titleKey: "warangal", time: "48 min ago", body: "IMD predicts 12–20 cm rainfall. Urban flooding possible in low-lying areas. Avoid non-essential travel." },
-  { level: "Yellow", variant: "info" as const, location: "Khammam district", titleKey: "khammam", time: "2 hr ago", body: "Panchayat officials monitoring 4 villages. Livestock relocation underway. Volunteers requested at Palair mandal office." },
+  { level: "Red", variant: "danger" as const, location: "Bhadrachalam, Bhadradri Kothagudem", titleKey: "godavari", timeNum: 12, timeUnit: "minAgo" },
+  { level: "Orange", variant: "warning" as const, location: "Warangal, Hanamkonda", titleKey: "warangal", timeNum: 48, timeUnit: "minAgo" },
+  { level: "Yellow", variant: "info" as const, location: "Khammam district", titleKey: "khammam", timeNum: 2, timeUnit: "hrAgo" },
 ];
+
+const alertBodies: Record<string, Record<string, string>> = {
+  en: {
+    godavari: "Water level at 53.2 ft and rising. Evacuation ordered for low-lying colonies. Move to designated relief camps immediately.",
+    warangal: "IMD predicts 12–20 cm rainfall. Urban flooding possible in low-lying areas. Avoid non-essential travel.",
+    khammam: "Panchayat officials monitoring 4 villages. Livestock relocation underway. Volunteers requested at Palair mandal office.",
+  },
+  te: {
+    godavari: "నీటి మట్టం 53.2 అడుగులు మరియు పెరుగుతోంది. పల్లపు ప్రాంత కాలనీలకు తరలింపు ఆదేశించబడింది. నిర్ణీత రిలీఫ్ క్యాంప్‌లకు వెంటనే వెళ్ళండి.",
+    warangal: "IMD 12–20 సె.మీ. వర్షపాతం అంచనా వేస్తోంది. పల్లపు ప్రాంతాల్లో పట్టణ వరద సాధ్యం. అనవసర ప్రయాణాలు నివారించండి.",
+    khammam: "పంచాయతీ అధికారులు 4 గ్రామాలను పర్యవేక్షిస్తున్నారు. పశువుల తరలింపు జరుగుతోంది. పైలారు మండల కార్యాలయంలో వలంటీర్లు అవసరం.",
+  },
+  hi: {
+    godavari: "जल स्तर 53.2 फीट पर है और बढ़ रहा है। निचले इलाकों की कॉलोनियों में निकासी के आदेश जारी। निर्धारित राहत शिविरों में तुरंत जाएं।",
+    warangal: "IMD 12–20 सेमी बारिश का अनुमान लगाता है। निचले इलाकों में शहरी बाढ़ संभव। गैर-जरूरी यात्रा से बचें।",
+    khammam: "पंचायत अधिकारी 4 गांवों की निगरानी कर रहे हैं। पशुधन स्थानांतरण जारी। पैलेर मंडल कार्यालय में स्वयंसेवक चाहिए।",
+  },
+};
 
 const alertTitles: Record<string, Record<string, string>> = {
   en: {
@@ -87,55 +105,56 @@ function HomePage() {
       icon: MapPin,
       title: t("home.nearestShelter"),
       value: "Zilla Parishad School",
-      meta: "Warangal · 2.4 km away · 180 beds free",
+      meta: `Warangal · 2.4 km ${t("home.away")} · 180 ${t("common.bedsFree")}`,
       badge: t("shelters.open"),
       badgeVariant: "success" as const,
       accent: "primary" as const,
-      footer: "Last updated 4 min ago",
+      footer: `${t("home.lastUpdated")} 4 ${t("alerts.minAgo")}`,
     },
     {
       icon: Megaphone,
       title: t("home.currentAlert"),
-      value: "Red Alert — Godavari Basin",
-      meta: "IMD warns of heavy rainfall for next 24 hours",
+      value: t("home.redAlertValue"),
+      meta: t("home.imdRainfallMeta"),
       badge: t("alerts.critical"),
       badgeVariant: "danger" as const,
       accent: "red" as const,
-      footer: "Issued by IMD Hyderabad · 06:12 AM",
+      footer: `${t("home.issuedBy")} IMD Hyderabad · 06:12 AM`,
     },
     {
       icon: Phone,
       title: t("home.emergencyContacts"),
       value: "112 · 1077 · 108",
-      meta: "Unified helpline, disaster desk & ambulance",
+      meta: t("home.contactsMeta"),
       badge: "24/7",
       badgeVariant: "info" as const,
       accent: "emerald" as const,
-      footer: "Tap footer to dial instantly",
+      footer: t("home.tapToDial"),
     },
     {
       icon: WifiOff,
       title: t("home.offlineStatus"),
-      value: "Ready · 42 MB cached",
-      meta: "Maps, translations & shelter list available offline",
+      value: `${t("home.ready")} · 42 MB ${t("home.cached")}`,
+      meta: t("home.offlineMeta"),
       badge: t("settings.upToDate"),
       badgeVariant: "success" as const,
       accent: "slate" as const,
-      footer: "Last sync: 12 min ago",
+      footer: `${t("home.lastSync")}: 12 ${t("alerts.minAgo")}`,
     },
     {
       icon: ShieldAlert,
       title: t("home.floodSafetyTips"),
-      value: "Move to higher ground",
-      meta: "Avoid walking through moving water · Turn off electricity",
-      badge: "Guide",
+      value: t("home.moveHigherGround"),
+      meta: t("home.avoidMovingWater"),
+      badge: t("home.guide"),
       badgeVariant: "info" as const,
       accent: "amber" as const,
-      footer: "8 illustrated cards available offline",
+      footer: t("home.safetyCardsOffline"),
     },
   ];
 
   const titles = alertTitles[lang] ?? alertTitles.en;
+  const bodies = alertBodies[lang] ?? alertBodies.en;
 
   return (
     <>
@@ -264,7 +283,7 @@ function HomePage() {
                     {a.level} {t("home.alert")}
                   </StatusBadge>
                   <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" /> {a.time}
+                    <Clock className="h-3 w-3" /> {a.timeNum} {t(`alerts.${a.timeUnit}`)}
                   </span>
                 </div>
                 <h3 className="mt-4 text-lg font-semibold leading-snug text-foreground">
@@ -273,7 +292,7 @@ function HomePage() {
                 <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                   <MapPin className="h-3 w-3" /> {a.location}
                 </p>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{a.body}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{bodies[a.titleKey]}</p>
                 <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
                   <Link
                     to="/alerts"

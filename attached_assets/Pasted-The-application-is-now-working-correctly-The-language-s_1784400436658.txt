@@ -1,0 +1,67 @@
+The application is now working correctly.
+
+The language switching is already working for:
+- Navbar
+- Settings
+- Report Emergency
+- Shelters
+- Flood Alerts
+- Survival Kit
+- About
+
+There is ONLY ONE remaining issue.
+
+On the Home page, inside the "Emergency Information" section (the group of summary cards shown below the hero section), several card texts remain hardcoded in English after changing the application language.
+
+For example:
+- Shelter names/descriptions
+- Alert title/subtitle
+- Offline status text
+- Safety guide text
+- Last updated
+- Last sync
+- Issued by
+- Tap footer to dial instantly
+- Guide
+- Ready
+- cached
+- beds free
+- away
+- Heavy rainfall...
+- Move to higher ground
+- Avoid walking through moving water...
+- Any other hardcoded strings inside these Home page emergency cards
+
+I want ALL user-visible text inside these cards to respect the currently selected language (English, Telugu, and Hindi).
+
+Requirements:
+
+1. Use the existing localization system only.
+2. Use the existing useLanguage() hook.
+3. Use the existing t() translation helper.
+4. Reuse existing translation architecture.
+5. Add translation keys only where they are missing.
+6. Preserve dynamic values such as:
+   - numbers
+   - shelter capacity
+   - distance
+   - timestamps
+   - phone numbers
+7. Translate only the labels/sentences around those values.
+8. Keep shelter names exactly as they are (proper names should NOT be translated unless already supported).
+9. Do NOT modify APIs.
+10. Do NOT modify business logic.
+11. Do NOT modify backend.
+12. Do NOT modify routing.
+13. Do NOT modify layout.
+14. Do NOT modify responsiveness.
+15. Do NOT modify styling.
+16. Do NOT modify colors.
+17. Do NOT modify spacing.
+18. Do NOT modify animations.
+19. Do NOT modify icons.
+20. Do NOT modify any other page.
+
+This task is ONLY to finish localization of the Home page Emergency Information cards.
+
+Everything else in the application is already working perfectly. Do not refactor or change anything outside these Home page cards.
