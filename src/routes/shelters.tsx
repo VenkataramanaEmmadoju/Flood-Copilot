@@ -229,15 +229,15 @@ function SheltersPage() {
           </Select>
         </div>
 
-        {/* Map + list */}
-        <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 lg:grid-cols-[1.15fr_1fr]">
+        {/* Map + list — single column on every viewport */}
+        <div className="mt-4 sm:mt-6">
           <MapPlaceholder
             shelters={filtered}
             selectedId={selected?.id}
             onSelect={setSelectedId}
           />
 
-          <div className="flex flex-col">
+          <div className="mt-4 sm:mt-6">
             <div className="flex items-baseline justify-between">
               <h2 className="text-lg font-semibold text-foreground">Nearest Shelters</h2>
               <span className="text-xs text-muted-foreground">

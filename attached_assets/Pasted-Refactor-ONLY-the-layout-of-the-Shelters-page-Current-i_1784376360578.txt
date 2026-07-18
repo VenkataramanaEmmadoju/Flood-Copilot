@@ -1,0 +1,86 @@
+Refactor ONLY the layout of the Shelters page.
+
+Current issue:
+The page currently uses a two-column layout with the map on the left and shelter cards on the right. Since the shelter list is longer than the map, a large empty blank area appears beneath the map.
+
+I want a layout-only refactor.
+
+Requirements:
+
+1. Remove the existing two-column layout completely.
+
+2. Use a SINGLE COLUMN layout on ALL screen sizes.
+   - Desktop
+   - Laptop
+   - Tablet
+   - Mobile
+
+3. The map must always appear at the top of the page.
+
+4. The map must span the full available width (100%) on every device.
+
+5. Keep approximately the current map height.
+   - Do not make it excessively tall or short.
+   - Preserve its current appearance.
+
+6. Immediately below the map, display the existing "Nearest Shelters" heading.
+
+7. Display all shelter cards vertically beneath the heading.
+
+8. There must never be shelter cards beside the map.
+   The layout should always be:
+
+   Map
+   ↓
+   Nearest Shelters
+   ↓
+   Shelter Card
+   Shelter Card
+   Shelter Card
+   ...
+
+9. Remove the empty blank area that currently appears below the map.
+
+10. Preserve every shelter card exactly as it currently looks:
+    - colors
+    - spacing
+    - typography
+    - buttons
+    - icons
+    - capacity bars
+    - status badges
+    - animations
+    - shadows
+    - border radius
+
+11. Do NOT redesign the UI.
+
+12. Do NOT change:
+    - business logic
+    - APIs
+    - filters
+    - search
+    - map functionality
+    - markers
+    - directions
+    - call buttons
+    - shelter data
+
+13. Do NOT modify any functionality.
+    Only refactor the page layout.
+
+14. Keep all current interactions working exactly as before.
+
+15. Ensure the final page is fully responsive and uses the exact same SINGLE COLUMN layout on:
+    - 320px mobile
+    - 375px mobile
+    - 425px mobile
+    - tablets
+    - laptops
+    - large desktop monitors
+
+16. Do not use responsive breakpoints that switch back to a two-column layout. The page should remain one-column at every viewport width.
+
+17. Reuse the existing components. Only change the layout container and responsive classes needed to achieve this.
+
+This is strictly a layout refactor. Do not redesign or restyle anything.
