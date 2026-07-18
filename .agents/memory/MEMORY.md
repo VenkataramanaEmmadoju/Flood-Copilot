@@ -1,1 +1,2 @@
 - [Groq model deprecation](groq-model.md) — llama3-8b-8192 is decommissioned; use llama-3.1-8b-instant for chat, llama-3.2-11b-vision-preview for vision
+- [Production deployment architecture](prod-architecture.md) — single Express process; no nitro at runtime; index.html pre-generated at build time

@@ -5,7 +5,6 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("path");
 const fs = require("fs");
-const http = require("http");
 
 // Load & validate env first
 const config = require("./config/env");
@@ -67,34 +66,23 @@ app.use("/api/image",     require("./routes/image"));
 app.use("/api/translate", require("./routes/translate"));
 app.use("/api/sos",       require("./routes/sos"));
 
-// ── Production: serve built frontend + proxy SSR to nitro ────────────────────
+// ── Production: serve built frontend as SPA ───────────────────────────────────
 if (!config.isDev) {
-  // Serve Vite/TanStack Start static assets (JS, CSS, images, manifest, etc.)
-  app.use(express.static(path.join(__dirname, "../.output/public")));
+  const outputPublic = path.join(__dirname, "../.output/public");
+  const indexHtml = path.join(outputPublic, "index.html");
 
-  // Catch-all: proxy all non-API requests to the TanStack Start SSR server
-  // (nitro node server running on NITRO_PORT, default 3001)
-  const NITRO_PORT = parseInt(process.env.NITRO_PORT, 10) || 3001;
+  // Serve Vite/TanStack Start static assets (JS, CSS, images, manifest, etc.)
+  app.use(express.static(outputPublic));
+
+  // SPA fallback: all non-API requests get the pre-rendered index.html
+  // (generated at build time by scripts/generate-index.js)
   app.use((req, res) => {
-    const options = {
-      hostname: "127.0.0.1",
-      port: NITRO_PORT,
-      path: req.url,
-      method: req.method,
-      headers: { ...req.headers, host: `127.0.0.1:${NITRO_PORT}` },
-    };
-    const proxy = http.request(options, (proxyRes) => {
-      res.writeHead(proxyRes.statusCode, proxyRes.headers);
-      proxyRes.pipe(res, { end: true });
-    });
-    proxy.on("error", (err) => {
-      logger.error("SSR proxy error", { message: err.message });
-      if (!res.headersSent) res.status(502).json({ error: "SSR unavailable" });
-    });
-    if (req.method !== "GET" && req.method !== "HEAD") {
-      req.pipe(proxy, { end: true });
+    if (fs.existsSync(indexHtml)) {
+      res.sendFile(indexHtml);
     } else {
-      proxy.end();
+      res.status(503).send(
+        "Frontend not built. Run: bun run build && node scripts/generate-index.js"
+      );
     }
   });
 }
