@@ -150,26 +150,12 @@ flood-copilot/
 
 ## Deployment
 
-### Render (recommended)
-
-The `render.yaml` in the repo root defines both services.
-
-**Steps:**
-1. Push to GitHub
-2. In [Render Dashboard](https://dashboard.render.com), click **New → Blueprint** and connect your repo
-3. Render will detect `render.yaml` and create both services
-4. Set these environment variables manually in the Render dashboard:
-   - **`flood-copilot-api`** service: `GROQ_API_KEY=your_key`, `CORS_ORIGINS=https://flood-copilot.onrender.com`
-   - **`flood-copilot`** service: `VITE_API_URL=https://flood-copilot-api.onrender.com/api`
-5. Trigger a manual deploy for `flood-copilot` after setting `VITE_API_URL` (it must be set at build time)
-
 ### Replit
 
 Both workflows are pre-configured:
 - **Frontend** — `bun run dev` on port 5000 (webview)
 - **Backend API** — `cd backend && PORT=8000 node server.js` (console)
 
-Add `GROQ_API_KEY` as a Replit Secret. The `/api` proxy is already configured in `vite.config.ts`.
 
 ---
 
@@ -199,7 +185,7 @@ Add `GROQ_API_KEY` as a Replit Secret. The `/api` proxy is already configured in
 | Number | Service |
 |--------|---------|
 | **112** | All-in-one emergency |
-| **1077** | Flood / Disaster helpline |
+| **1070** | Flood / Disaster helpline |
 | **108** | Ambulance |
 | **100** | Police |
 | **101** | Fire & Rescue |
