@@ -386,7 +386,7 @@ function VoiceReport() {
     const rec = new SRA();
     rec.continuous = true;
     rec.interimResults = true;
-    rec.lang = "te-IN"; // Telugu; falls back to English on unsupported browsers
+    rec.lang = navigator.language || "en-US"; // use the browser/OS language so speech is transcribed in whatever language the user speaks
     recognitionRef.current = rec;
 
     let finalText = "";
