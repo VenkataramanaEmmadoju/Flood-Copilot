@@ -75,5 +75,5 @@ externalPort = 80
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["bash", "-c", "PORT=3001 node /home/runner/workspace/.output/server/index.mjs & sleep 2 && cd /home/runner/workspace/backend && PORT=3000 NODE_ENV=production node server.js"]
+run = ["bash", "-c", "PORT=3001 node /home/runner/workspace/.output/server/index.mjs & sleep 2 && cd /home/runner/workspace/backend && NODE_ENV=production node server.js"]
 build = ["bash", "-c", "cd /home/runner/workspace && bun install && bun run build && cd backend && npm install"]
