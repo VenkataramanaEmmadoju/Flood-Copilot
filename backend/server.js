@@ -16,6 +16,7 @@ const logger = require("./utils/logger");
 
 // ── App ────────────────────────────────────────────────────────────────────────
 const app = express();
+app.set("trust proxy", 1);
 
 // ── Uploads directory ─────────────────────────────────────────────────────────
 const uploadsDir = path.join(__dirname, config.upload.dir);
