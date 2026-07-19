@@ -1,199 +1,408 @@
-# Flood Copilot 🌊
+# 🌊 Flood Copilot
 
-**AI-Powered Flood Copilot with Offline Emergency Support for Rural Telangana**
+> **AI-Powered Multilingual Flood Emergency Assistant for Rural Telangana**
 
-A hackathon project that helps citizens communicate faster with 112 and local responders during floods — using voice, text, and photos — even in low-connectivity environments.
-
-[![Backend](https://img.shields.io/badge/backend-Express.js-green)](backend/)
-[![AI](https://img.shields.io/badge/AI-Groq%20%7C%20Llama%203-orange)](https://console.groq.com)
-[![Frontend](https://img.shields.io/badge/frontend-TanStack%20Start-blue)](https://tanstack.com/start)
+Flood Copilot is an AI-powered disaster response platform that enables citizens to report flood emergencies using **voice, text, or images**, receive intelligent emergency guidance, generate structured SOS messages, locate nearby shelters, and stay informed through official flood alerts—all in **English, Telugu, and Hindi**.
 
 ---
 
-## Features
+## 🚀 Live Demo
+
+🌐 **Frontend:** https://flood-copilot.vercel.app
+
+⚙️ **Backend Health:** https://flood-copilot.onrender.com/api/health
+
+---
+
+## 📌 Problem Statement
+
+Floods are among the most devastating natural disasters in India, especially in rural regions where communication barriers, low digital literacy, and poor connectivity delay emergency response.
+
+During emergencies, citizens often struggle to:
+
+- Communicate their situation clearly
+- Report emergencies in their native language
+- Identify nearby relief shelters
+- Access verified flood alerts
+- Generate structured SOS messages for emergency responders
+
+Flood Copilot addresses these challenges using AI to simplify emergency communication and improve disaster response.
+
+---
+
+# 💡 Solution
+
+Flood Copilot is an intelligent emergency assistant that helps users:
+
+- 🎙 Report emergencies through voice
+- 📝 Describe incidents using text
+- 📸 Upload flood images for AI analysis
+- 🆘 Generate structured SOS messages
+- 🏠 Locate nearby relief shelters
+- 🚨 View official flood alerts
+- 🌐 Interact in English, Telugu, or Hindi
+- 📴 Access emergency resources even during poor connectivity
+
+---
+
+# ✨ Key Features
 
 | Feature | Description |
 |---------|-------------|
-| 🎙 Voice report | Record voice in Telugu/English → AI emergency summary |
-| 📝 Text report | Describe situation → structured AI summary |
-| 📸 Photo analysis | Upload flood photo → severity + rescue advice |
-| 🆘 SOS generator | Bilingual SOS in English + Telugu ready to relay to 112 |
-| 🏠 Shelter finder | Live shelter list with district/village filters |
-| 🚨 Flood alerts | IMD, CWC, TSDMA bulletins sorted by severity |
-| 🌐 Translation | Telugu ↔ English ↔ Hindi via Groq |
-| 📴 Survival kit | Offline emergency contacts, first aid, go-bag checklist |
+| 🎙 Voice Reporting | AI converts spoken emergencies into structured summaries |
+| 📝 Text Reporting | AI analyzes user descriptions and generates emergency summaries |
+| 📸 Flood Image Analysis | AI estimates severity, water level, risks, and rescue recommendations |
+| 🆘 SOS Generator | Creates structured emergency messages ready for 112 or local responders |
+| 🏠 Shelter Finder | Search relief shelters by district with live availability |
+| 🚨 Flood Alerts | Displays flood bulletins and weather alerts |
+| 🌐 Multilingual Support | Supports English, Telugu, and Hindi throughout the application |
+| 🔄 Automatic Language Detection | AI recognizes the user's language and responds accordingly |
+| 📴 Survival Kit | Offline emergency contacts, first-aid guidance, and preparedness checklist |
 
 ---
 
-## Stack
+# 🧠 AI Workflow
 
-| Layer | Tech |
-|-------|------|
-| Frontend | React 19, TanStack Start (SSR), Tailwind CSS v4, shadcn/ui |
-| Backend | Node.js, Express.js, Groq SDK |
-| AI Model | Purpose |
-| llama3-8b-8192 | Chat, Voice, Translation, SOS |
-| meta-llama/llama-4-scout-17b-16e-instruct *(or your current Groq vision model)* | Flood image analysis |
-| Package manager | Bun (frontend), npm (backend) |
+```
+            Voice
+               │
+               ▼
+Text ─────► AI Processing ◄──── Image
+               │
+               ▼
+      Language Detection
+               │
+               ▼
+      Structured AI Summary
+               │
+               ▼
+      Risk Assessment
+               │
+               ▼
+      SOS Generation
+               │
+               ▼
+      Emergency Response
+```
 
 ---
 
-## Quick Start
+# 📷 Screenshots
 
-### Prerequisites
-- Node.js ≥ 18
-- Bun ≥ 1.0
-- A [Groq API key](https://console.groq.com) (free)
+> Replace these images with your actual screenshots.
 
-### 1. Clone and install
+## 🏠 Home
+
+![Home](assets/home.png)
+
+---
+
+## 🚨 Report Emergency
+
+![Report](assets/report.png)
+
+---
+
+## 📸 AI Image Analysis
+
+![Image Analysis](assets/image-analysis.png)
+
+---
+
+## 🏠 Shelter Finder
+
+![Shelters](assets/shelters.png)
+
+---
+
+## 🚨 Flood Alerts
+
+![Alerts](assets/alerts.png)
+
+---
+
+## 🌐 Multilingual Support
+
+![Language](assets/language.png)
+
+---
+
+# 🏗️ System Architecture
+
+```
+                 User
+                  │
+      ┌───────────┼───────────┐
+      │           │           │
+   Voice        Text       Image
+      │           │           │
+      └───────────┼───────────┘
+                  ▼
+          React Frontend
+       (TanStack Start SSR)
+                  │
+                  ▼
+          Express.js Backend
+                  │
+      ┌───────────┼───────────┐
+      │           │           │
+      ▼           ▼           ▼
+  Groq AI     Shelter DB   Alerts DB
+      │
+      ▼
+ AI Summary / SOS / Translation
+```
+
+---
+
+# 🛠 Technology Stack
+
+| Category | Technology |
+|-----------|------------|
+| Frontend | React 19 |
+| Framework | TanStack Start |
+| Styling | Tailwind CSS v4 |
+| UI Components | shadcn/ui |
+| Backend | Node.js + Express.js |
+| AI Platform | Groq |
+| AI Models | Llama 3, Vision Model |
+| Deployment | Vercel + Render |
+| Package Manager | Bun (Frontend), npm (Backend) |
+
+---
+
+# 🤖 AI Models Used
+
+| Model | Purpose |
+|---------|---------|
+| Llama 3 | AI Chat Assistant |
+| Llama 3 | Voice Summary Generation |
+| Llama 3 | SOS Generation |
+| Llama 3 | Translation |
+| Vision Model | Flood Image Risk Assessment |
+
+---
+
+# 🚀 Quick Start
+
+## Prerequisites
+
+- Node.js 18+
+- Bun
+- Groq API Key
+
+---
+
+## Clone Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/yourusername/flood-copilot.git
+
 cd flood-copilot
-
-# Install frontend dependencies
-bun install
-
-# Install backend dependencies
-cd backend && npm install && cd ..
 ```
 
-### 2. Configure environment
+---
+
+## Install Dependencies
+
+Frontend
 
 ```bash
-# Backend
-cp backend/.env.example backend/.env
-# Edit backend/.env and set GROQ_API_KEY=your_key_here
+bun install
 ```
 
-### 3. Run both services
+Backend
 
-**Terminal 1 — Frontend (port 5000):**
+```bash
+cd backend
+
+npm install
+
+cd ..
+```
+
+---
+
+## Configure Environment Variables
+
+Backend
+
+```
+backend/.env
+```
+
+```
+GROQ_API_KEY=YOUR_API_KEY
+PORT=8000
+NODE_ENV=development
+```
+
+Frontend
+
+```
+.env
+```
+
+```
+VITE_API_URL=http://localhost:8000/api
+```
+
+---
+
+## Start Development Server
+
+Frontend
+
 ```bash
 bun run dev
 ```
 
-**Terminal 2 — Backend (port 8000):**
+Backend
+
 ```bash
 cd backend
-PORT=8000 node server.js
-# or: npm run dev   (uses nodemon for auto-reload)
+
+npm start
 ```
 
-The Vite dev server proxies `/api/*` to the backend automatically — no CORS config needed in dev.
+Open
 
-Open **http://localhost:5000** in your browser.
-
----
-
-## API Reference
-
-All endpoints return `{ success: true, data: {...} }` or `{ success: false, error: { message: "..." } }`.
-
-### GET endpoints
-
-| Endpoint | Query params | Description |
-|----------|-------------|-------------|
-| `GET /api/health` | — | Service health check |
-| `GET /api/shelters` | `district`, `status` | Relief shelter list |
-| `GET /api/emergency` | `type` | Emergency contact numbers |
-| `GET /api/tips` | `category`, `priority` | Flood safety tips |
-| `GET /api/alerts` | `district`, `severity` | Flood bulletins |
-
-### POST endpoints
-
-| Endpoint | Body | Description |
-|----------|------|-------------|
-| `POST /api/chat` | `{ message, history? }` | Bilingual flood assistant |
-| `POST /api/voice` | `{ transcript, language? }` | Voice → AI summary |
-| `POST /api/image` | `multipart/form-data` field `image` | Flood photo analysis |
-| `POST /api/translate` | `{ text, from, to }` | Te ↔ En ↔ Hi translation |
-| `POST /api/sos` | `{ name, location, emergency, peopleAffected?, urgency?, contactNumber? }` | Bilingual SOS generator |
+```
+http://localhost:5000
+```
 
 ---
 
-## Project Structure
+# 📡 REST API
+
+## GET Endpoints
+
+| Endpoint | Description |
+|------------|------------|
+| GET /api/health | Health Check |
+| GET /api/shelters | Shelter List |
+| GET /api/alerts | Flood Alerts |
+| GET /api/tips | Safety Tips |
+| GET /api/emergency | Emergency Contacts |
+
+---
+
+## POST Endpoints
+
+| Endpoint | Description |
+|------------|------------|
+| POST /api/chat | AI Chat |
+| POST /api/voice | Voice Analysis |
+| POST /api/image | Flood Image Analysis |
+| POST /api/translate | Translation |
+| POST /api/sos | SOS Generator |
+
+---
+
+# 📂 Project Structure
 
 ```
 flood-copilot/
-├── src/                       # Frontend (TanStack Start)
+
+├── src/
 │   ├── routes/
-│   │   ├── index.tsx          # Home page
-│   │   ├── report.tsx         # Emergency reporting (voice/text/photo + SOS)
-│   │   ├── shelters.tsx       # Shelter finder
-│   │   ├── alerts.tsx         # Flood alerts
-│   │   ├── survival-kit.tsx   # Offline survival reference
-│   │   ├── about.tsx
-│   │   └── settings.tsx
 │   ├── components/
-│   │   ├── ui/                # shadcn/ui components
-│   │   └── ...                # App-specific components
-│   └── lib/
-│       ├── api.ts             # Typed API client (all endpoints)
-│       └── types.ts           # Shared TypeScript types
+│   ├── contexts/
+│   ├── hooks/
+│   ├── lib/
+│   └── styles/
 │
-├── backend/                   # Express.js API
-│   ├── server.js              # Entry point
-│   ├── config/                # Env + Groq client
-│   ├── controllers/           # Request handlers
-│   ├── routes/                # Express routers
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── routes/
 │   ├── services/
-│   │   └── groqService.js     # Groq chat + vision wrappers
-│   ├── middleware/            # Error, rate limit, upload, validation
-│   ├── data/                  # Seed data (shelters, alerts, tips, contacts)
-│   └── utils/                 # Logger, response helpers
+│   ├── data/
+│   ├── utils/
+│   └── server.js
 │
-├── vite.config.ts             # Vite + TanStack Start config (with /api proxy)
-├── render.yaml                # Render deployment config
+├── public/
+├── assets/
+├── vite.config.ts
+├── render.yaml
 └── README.md
 ```
 
 ---
 
-## Deployment
+# 🌍 Deployment
 
-### Replit
-
-Both workflows are pre-configured:
-- **Frontend** — `bun run dev` on port 5000 (webview)
-- **Backend API** — `cd backend && PORT=8000 node server.js` (console)
-
-
----
-
-## Environment Variables
-
-### Backend (`backend/.env`)
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `GROQ_API_KEY` | ✅ | — | Groq API key |
-| `PORT` | No | `5000` | Server port |
-| `NODE_ENV` | No | `development` | Environment |
-| `CORS_ORIGINS` | No | localhost variants | Comma-separated allowed origins |
-| `RATE_LIMIT_MAX` | No | `100` | Max requests per minute |
-| `MAX_FILE_SIZE_MB` | No | `10` | Image upload size limit |
-
-### Frontend (root `.env`)
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `VITE_API_URL` | No | `` (empty) | Backend base URL for production. Empty = use Vite proxy |
+| Service | Platform |
+|----------|----------|
+| Frontend | Vercel |
+| Backend | Render |
+| AI | Groq |
 
 ---
 
-## Emergency Numbers (Telangana)
+# 🔐 Environment Variables
+
+Backend
+
+| Variable | Description |
+|-----------|-------------|
+| GROQ_API_KEY | Groq API Key |
+| PORT | Backend Port |
+| NODE_ENV | Environment |
+| CORS_ORIGINS | Allowed Origins |
+| RATE_LIMIT_MAX | API Rate Limit |
+| MAX_FILE_SIZE_MB | Upload Size |
+
+Frontend
+
+| Variable | Description |
+|-----------|-------------|
+| VITE_API_URL | Backend API URL |
+
+---
+
+# ☎️ Telangana Emergency Numbers
 
 | Number | Service |
-|--------|---------|
-| **112** | All-in-one emergency |
-| **1070** | Flood / Disaster helpline |
+|----------|----------|
+| **112** | National Emergency |
+| **1070** | Flood & Disaster Helpline |
 | **108** | Ambulance |
 | **100** | Police |
 | **101** | Fire & Rescue |
 
 ---
 
-## License
+# 🚀 Future Scope
 
-MIT — built for a hackathon. Use freely.
+- 📍 Live GPS-based shelter navigation
+- 📲 WhatsApp SOS sharing
+- 🔔 Push notifications for flood alerts
+- 🛰 Satellite flood prediction integration
+- 🤖 Offline AI support
+- 🌎 Expansion to multiple Indian states
+- 🏛 Government disaster management integration
+
+---
+
+# 🤝 Acknowledgements
+
+- Groq AI
+- React
+- TanStack Start
+- Express.js
+- Tailwind CSS
+- shadcn/ui
+- Vercel
+- Render
+
+---
+
+# 📄 License
+
+Licensed under the **MIT License**.
+
+---
+
+## ❤️ Built to make emergency communication faster, smarter, and more accessible during floods.
