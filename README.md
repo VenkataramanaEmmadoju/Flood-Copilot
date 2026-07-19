@@ -14,6 +14,14 @@ Flood Copilot is an AI-powered disaster response platform that enables citizens 
 
 ---
 
+## Built For
+
+**NxtWave Online Hackathon 2026**
+
+Theme: Crisis Management, HealthTech & Emergency Response
+
+---
+
 ## 📌 Problem Statement
 
 Floods are among the most devastating natural disasters in India, especially in rural regions where communication barriers, low digital literacy, and poor connectivity delay emergency response.
