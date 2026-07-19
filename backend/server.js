@@ -29,16 +29,30 @@ app.use(
   })
 );
 
+
 // ── CORS ──────────────────────────────────────────────────────────────────────
 app.use(
   cors({
-    origin: (origin, cb) => {
-      // Allow requests with no origin (curl, Postman, same-origin SSR)
-      if (!origin) return cb(null, true);
-      if (config.isDev) return cb(null, true);
-      if (config.cors.origins.includes(origin)) return cb(null, true);
-      cb(new Error(`CORS: origin '${origin}' not allowed`));
+    origin(origin, callback) {
+      // Allow requests without Origin (curl, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+
+      // Development: allow everything
+      if (config.isDev) return callback(null, true);
+
+      // Allow configured origins
+      if (config.cors.origins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Allow all Vercel deployments (production + preview)
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS: origin '${origin}' not allowed`));
     },
+
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
